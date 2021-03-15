@@ -20,7 +20,7 @@ stations = [
 for station in stations:
     location = ApiRequest(station['station_id'],station['lat'],station['lng'])
     location_data = location.get_api_request()
-    producer.send('stationdata', value=location_data)
+    producer.send('datastation', value=location_data)
     print(location_data)
     sleep(10)
 

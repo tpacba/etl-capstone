@@ -14,8 +14,6 @@ parquet_df.show()
 
 list_stations = map(lambda row: row.asDict(), parquet_df.collect())
 
-# print(list_stations)
-
 client = MongoClient("mongodb+srv://tpacba:OneYear_95@cluster0.ufwrg.mongodb.net/station_data?retryWrites=true&w=majority")
 db = client.station_data
 collection = db.list_stations

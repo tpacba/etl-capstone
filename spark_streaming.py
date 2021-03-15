@@ -10,7 +10,7 @@ os.environ['PYSPARK_SUBMIT_ARGS'] = '--packages org.apache.spark:spark-sql-kafka
 
 spark = SparkSession.builder.appName('Spark_Streaming').master('local[*]').enableHiveSupport().getOrCreate()
 
-df = spark.readStream.format('kafka').option('kafka.bootstrap.servers','localhost:9092').option('subscribe','stationdata').option('startingOffsets','earliest').load()
+df = spark.readStream.format('kafka').option('kafka.bootstrap.servers','localhost:9092').option('subscribe','datastation').option('startingOffsets','latest').load()
 df.printSchema()
 
 df1 = df.selectExpr('CAST(value AS STRING)', 'timestamp')
@@ -21,10 +21,6 @@ df2 = df1.select(from_json(col('value'),schema).alias('weather_detail'),'timesta
 
 df3 = df2.select('weather_detail.*','timestamp')
 df3.printSchema()
-
-# df4 = df3.groupBy('station_id').agg({'airTemperature':'avg'}).select('station_id',col('avg(airTemperature)')).alias('avg_airTemperature')
-
-# df_write_stream = df3.writeStream.trigger(processingTime='5 seconds').outputMode('append').option('truncate','false').format('hive').toTable('streamdb.weather_detail')
 
 df_write_stream = df3.writeStream.trigger(processingTime='5 seconds').outputMode('append').option('truncate','false').format('parquet').option('checkpointLocation', '/capstone/checkpoint').option('path','/capstone/stream').start()
 
