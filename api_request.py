@@ -57,11 +57,13 @@ class ApiRequest:
         # weather_data = {'hours': [{'airTemperature': {'noaa': 13.19, 'sg': 13.19}, 'gust': {'noaa': 12.58, 'sg': 12.58}, 'humidity': {'noaa': 67.0, 'sg': 67.0}, 'time': '2021-03-09T20:00:00+00:00', 'windSpeed': {'icon': 10.34, 'noaa': 10.75, 'sg': 10.34}}], 'meta': {'cost': 1, 'dailyQuota': 50, 'end': '2021-03-09 20:59', 'lat': self.lat, 'lng': self.lng, 'params': ['windSpeed', 'gust', 'airTemperature', 'humidity'], 'requestCount': 2, 'start': '2021-03-09 20:00'}}
         # solar_data = {'hours': [{'time': '2021-03-09T20:00:00+00:00', 'uvIndex': {'noaa': 0.16, 'sg': 0.16}}], 'meta': {'cost': 1, 'dailyQuota': 50, 'end': '2021-03-09 20:59', 'lat': self.lat, 'lng': self.lng, 'params': ['uvIndex'], 'requestCount': 3, 'start': '2021-03-09 20:00'}}
 
+        # Parse to unix time, easier for d3.js to read in data visualization
         def parse_date_to_unix(time):
             dt = datetime.datetime.strptime(time, '%Y-%m-%dT%H:%M:%S+00:00')
             ut = dt.timestamp()
             return ut
 
+        # Extract only relevant weather data
         data = {
         'airTemperature': weather_data['hours'][0]['airTemperature']['noaa'],
         'gust': weather_data['hours'][0]['gust']['noaa'],
